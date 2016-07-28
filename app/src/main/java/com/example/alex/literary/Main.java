@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 
 
@@ -21,8 +22,6 @@ import android.util.Log;
 import android.os.Environment;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 
 import java.io.*;
@@ -30,15 +29,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
-import android.content.Context;
+
 import android.content.res.AssetManager;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
 
 import edu.mit.jwi.morph.WordnetStemmer;
@@ -90,7 +82,6 @@ public class Main extends AppCompatActivity {
         dfnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                copyAssets();
                 String hello = "";
                 Log.d(hello, "I'm here");
                 String inputWord = dfnField.getText().toString();
@@ -209,6 +200,7 @@ public class Main extends AppCompatActivity {
         System.out.println(fpath);
 
         File f = new File(fpath.toString());
+        ArrayList<ArrayList<String>> definitions = new ArrayList<>();
 
         try {
             System.out.println("Am I here?");
@@ -225,10 +217,13 @@ public class Main extends AppCompatActivity {
 
             List<String> answer = stem.findStems(inputWord, null);
 
-            if (answer.isEmpty())
 
+
+            if (answer.isEmpty())
             {
-                System.out.println("Sorry, we cannot find the word you're looking for!");
+                String error = "Sorry, we cannot find the word you're looking for!";
+                dfnDisplay.setText(error);
+                System.out.println("I'm here LOLDASDLA");
             }
 
             try {
@@ -250,25 +245,25 @@ public class Main extends AppCompatActivity {
                     if (verb == true) {
                         IIndexWord idxWord = dict.getIndexWord(answer.get(i), POS.VERB);
                         System.out.println("Verb:\n");
-                        printDefinition(dict, idxWord);
+                        definitions.add(printDefinition(dict, idxWord, "Verb"));
                     }
 
                     if (noun == true) {
                         IIndexWord idxWord = dict.getIndexWord(answer.get(i), POS.NOUN);
                         System.out.println("Noun:\n");
-                        printDefinition(dict, idxWord);
+                        definitions.add(printDefinition(dict, idxWord, "Noun"));
                     }
 
                     if (adjective == true) {
                         IIndexWord idxWord = dict.getIndexWord(answer.get(i), POS.ADJECTIVE);
                         System.out.println("Adjective:\n");
-                        printDefinition(dict, idxWord);
+                        definitions.add(printDefinition(dict, idxWord, "Adjective"));
                     }
 
                     if (adverb == true) {
                         IIndexWord idxWord = dict.getIndexWord(answer.get(i), POS.ADVERB);
                         System.out.println("Adverb\n");
-                        printDefinition(dict, idxWord);
+                        definitions.add(printDefinition(dict, idxWord, "Adverb"));
 
                     }
 
@@ -286,12 +281,25 @@ public class Main extends AppCompatActivity {
 //            dfnDisplay.setText("woh");
             System.out.println("Completed!");
         }
+
+        String formatedString = definitions.toString()
+                .replace(",", "\n")//remove the commas
+                .replace("[", "")  //remove the right bracket
+                .replace("]", "\n")  //remove the left bracket
+                .trim();
+
+        dfnDisplay.setMovementMethod(new ScrollingMovementMethod());
+        dfnDisplay.setText(formatedString);
+
     }
 
 
-    private static void printDefinition(IDictionary dict, IIndexWord idxWord) {
+    private static ArrayList<String> printDefinition(IDictionary dict, IIndexWord idxWord, String POS) {
 
         WordnetStemmer stemmer = new WordnetStemmer(dict);
+        ArrayList<String> definitions = new ArrayList<String>();
+
+        definitions.add(POS + "\n");
 
 
         for (int i = 0; i >= 0; i++) {
@@ -301,33 +309,35 @@ public class Main extends AppCompatActivity {
 
             try {
                 if (idxWord != null) {
+
                     IWordID wordID = idxWord.getWordIDs().get(i);
                     IWord word = dict.getWord(wordID);
-                    dfnDisplay.setText("(" + (i + 1) + ") " + word.getSynset().getGloss() + "\n");
+                    definitions.add("(" + (i + 1) + ") " + word.getSynset().getGloss() + "");
+//                    dfnDisplay.setText("(" + (i + 1) + ") " + word.getSynset().getGloss() + "\n");
                     System.out.println("(" + (i + 1) + ") " + word.getSynset().getGloss());
                     System.out.println("");
                 }
             } catch (NullPointerException e) {
-//                dfnDisplay.setText("Sorry, we cannot find the word you're looking for!" + "\n");
-                System.out.println("Sorry, we cannot find the word you're looking for!");
+                dfnDisplay.setText("Sorry, we cannot find the word you're looking for!" + "\n");
                 break;
             } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
                 break;
-            }
-            catch(IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("I'm in this Index");
                 e.printStackTrace();
                 break;
             }
         }
 
+        return definitions;
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        copyAssets();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
