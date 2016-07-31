@@ -3,13 +3,9 @@ package com.example.alex.literary.mainactivity;
 import com.example.alex.literary.dictionary.*;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -23,27 +19,11 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import edu.mit.jwi.Dictionary;
-import edu.mit.jwi.IDictionary;
-import edu.mit.jwi.item.IIndexWord;
-import edu.mit.jwi.item.IWord;
-import edu.mit.jwi.item.IWordID;
-import edu.mit.jwi.item.POS;
-import edu.mit.jwi.morph.WordnetStemmer;
-
 public class Main extends AppCompatActivity {
 
     EditText dfnField;
     static TextView dfnDisplay, errorDisplay;
-    Button dfnBtn;
+    Button dfnBtn, addBtn;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -61,18 +41,26 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         new ImportFiles(this.getApplicationContext());
 
-
         dfnField = (EditText) findViewById(R.id.dfnField);
         dfnDisplay = (TextView) findViewById(R.id.dfnDisplay);
         dfnBtn = (Button) findViewById(R.id.dfnBtn);
+        addBtn = (Button)findViewById(R.id.addBtn);
 
         PermissionWriteFiles.verifyStoragePermissions(this);
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), WordManagement.class);
+                startActivityForResult(intent, 0);
+
+            }
+        });
 
 
         dfnBtn.setOnClickListener(new View.OnClickListener() {
@@ -98,9 +86,6 @@ public class Main extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
