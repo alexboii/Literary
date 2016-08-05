@@ -23,6 +23,7 @@ import com.google.api.services.books.Books.Volumes.List;
 import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
@@ -52,7 +53,8 @@ public class BooksSample {
         ClientCredentials.errorIfNotSpecified();
 
         // Set up Books client.
-        final Books books = new Books.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
+        final Books books = new Books.Builder(new com.google.api.client.http.javanet.NetHttpTransport()
+                , jsonFactory, null)
                 .setApplicationName(APPLICATION_NAME)
                 .setGoogleClientRequestInitializer(new BooksRequestInitializer(ClientCredentials.API_KEY))
                 .build();

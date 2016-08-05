@@ -43,9 +43,9 @@
             android:layout_gravity="right" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="SEARCH"
+            android:text="@string/search"
             android:id="@+id/dfnBtn"
             android:layout_weight="0.87" /> </LinearLayout>
 

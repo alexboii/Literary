@@ -59,7 +59,9 @@ public class WordManagement extends AppCompatActivity implements Constants {
 
         wordList.setAdapter(wordListAdapter);
 
-        new BooksSample();
+        String[] argument = new String[]{"The Foundation Pit, Platonov"};
+
+        new BooksSample().main(argument);
 
         wordList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
