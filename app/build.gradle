@@ -27,4 +27,21 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.android.support:design:23.3.0'
+    compile files('libs/google-api-client-1.22.0.jar')
+    compile files('libs/google-api-client-android-1.22.0.jar')
+    compile files('libs/google-api-services-myBooks-v1-rev86-1.22.0.jar')
+    compile files('libs/google-api-client-jackson2-1.22.0.jar')
+    compile files('libs/google-api-client-appengine-1.22.0.jar')
+    compile files('libs/google-api-client-java6-1.22.0.jar')
+    compile files('libs/google-api-client-gson-1.22.0.jar')
+    compile files('libs/google-api-client-servlet-1.22.0.jar')
+    compile files('libs/google-http-client-1.22.0.jar')
+    compile files('libs/google-api-services-books-v1-rev86-1.22.0.jar')
+    compile files('libs/google-http-client-gson-1.22.0.jar')
+    compile files('libs/google-http-client-appengine-1.22.0.jar')
+    compile files('libs/google-http-client-jackson2-1.22.0.jar')
+    compile files('libs/google-http-client-jdo-1.22.0.jar')
+    compile files('libs/google-http-client-android-1.22.0.jar')
+    compile files('libs/google-api-services-books-v1-rev86-1.22.0-javadoc.jar')
+    compile files('libs/google-api-services-books-v1-rev86-1.22.0-sources.jar')
 }

@@ -3,22 +3,17 @@ package com.example.alex.literary.mainactivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView;
 
 import com.example.alex.literary.R;
-import com.example.alex.literary.dictionary.English;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +25,7 @@ public class WordManagement extends AppCompatActivity implements Constants {
     ListView wordList;
     MyDBHandler dbHandler;
     SQLiteDatabase newDB;
-    public List<Book> books;
+    public List<myBook> myBooks;
     public List<String> bookTitles;
     public ArrayAdapter wordListAdapter;
     public boolean isDelete;
@@ -54,7 +49,7 @@ public class WordManagement extends AppCompatActivity implements Constants {
         wordField = (EditText) findViewById(R.id.wordField);
 
 
-        books = new ArrayList<Book>();
+        myBooks = new ArrayList<myBook>();
         bookTitles = new ArrayList<String>();
 
         String hello = "";
@@ -63,6 +58,8 @@ public class WordManagement extends AppCompatActivity implements Constants {
         wordListAdapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list, bookTitles);
 
         wordList.setAdapter(wordListAdapter);
+
+        new BooksSample();
 
         wordList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
@@ -99,8 +96,8 @@ public class WordManagement extends AppCompatActivity implements Constants {
             public void onClick(View view) {
 
                 String inputWord = wordField.getText().toString();
-                Book book = new Book(inputWord);
-                dbHandler.addBook(book);
+                myBook myBook = new myBook(inputWord);
+                dbHandler.addBook(myBook);
                 System.out.println(dbHandler.databaseToString());
                 bookTitles.add(inputWord);
                 wordListAdapter.notifyDataSetChanged();

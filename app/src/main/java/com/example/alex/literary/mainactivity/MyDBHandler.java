@@ -31,9 +31,9 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
 
     }
 
-    public void addBook(Book book){
+    public void addBook(myBook myBook){
         ContentValues values = new ContentValues();
-        values.put(COLUMN_BOOK_TITLE, book.getBookTitle());
+        values.put(COLUMN_BOOK_TITLE, myBook.getBookTitle());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_BOOKS, null, values);
         db.close();
