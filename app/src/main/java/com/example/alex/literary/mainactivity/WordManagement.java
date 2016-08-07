@@ -1,5 +1,6 @@
 package com.example.alex.literary.mainactivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -31,6 +32,7 @@ public class WordManagement extends AppCompatActivity implements Constants {
     public boolean isDelete;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -59,9 +61,11 @@ public class WordManagement extends AppCompatActivity implements Constants {
 
         wordList.setAdapter(wordListAdapter);
 
-        String[] argument = new String[]{"The Foundation Pit, Platonov"};
+        String[] argument = new String[]{"The Birth of Tragedy"};
 
-        new BooksSample().main(argument);
+//        new BooksSample().main(argument);
+//        String lol = "Madame Bovary";
+//        BooksSample.sampleCode(lol);
 
         wordList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
@@ -82,6 +86,16 @@ public class WordManagement extends AppCompatActivity implements Constants {
                             wordListAdapter.notifyDataSetChanged();
                         }
                     }
+
+                }
+                else{
+
+                    Intent intent = new Intent(view.getContext(), BookProfile.class);
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("data", item);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
                 }
 
@@ -113,13 +127,13 @@ public class WordManagement extends AppCompatActivity implements Constants {
 
     public void deleteBtnClicked(View view) {
 
-        System.out.println("Am I here?");
+        System.out.println(isDelete);
 
-        if (isDelete == true) {
-            isDelete = false;
-        }
+
         if(isDelete == false){
             isDelete = true;
+        }else{
+            isDelete = false;
         }
 
     }

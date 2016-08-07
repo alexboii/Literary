@@ -12,21 +12,27 @@ public class myBook {
 
     public ArrayList<String> words, quotes;
     public String bookTitle;
-    public HashMap <String, String> picture;
 
-        myBook(String bookTitle, ArrayList<String> words, ArrayList<String> quotes, HashMap <String, String> picture){
+    public String bookAuthor;
+    public String bookImageURL;
+    public HashMap<String, String> picture;
 
-            words = this.words;
-            quotes = this.quotes;
-            bookTitle = this.bookTitle;
-            picture = this.picture;
+    myBook(String bookTitle, ArrayList<String> words, ArrayList<String> quotes, HashMap<String, String> picture) {
 
-        }
-        myBook(String bookTitle){
+        this.words = words;
+        this.quotes = quotes;
+        this.bookTitle = bookTitle;
+        this.picture = picture;
 
-            this.bookTitle = bookTitle;
+    }
 
-        }
+    myBook(String bookTitle) {
+        this.bookTitle = bookTitle;
+    }
+
+    public myBook() {
+
+    }
 
     public String getBookTitle() {
         return bookTitle;
@@ -36,7 +42,21 @@ public class myBook {
         this.bookTitle = bookTitle;
     }
 
+    public String getBookAuthor() {
+        return bookAuthor;
+    }
 
+    public void setBookAuthor(String bookAuthor) {
+        this.bookAuthor = bookAuthor;
+    }
+
+    public String getBookImageURL() {
+        return bookImageURL;
+    }
+
+    public void setBookImageURL(String bookImageURL) {
+        this.bookImageURL = bookImageURL;
+    }
 
 
 }

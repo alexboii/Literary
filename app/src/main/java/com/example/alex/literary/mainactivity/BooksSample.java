@@ -22,11 +22,21 @@ import com.google.api.services.books.BooksRequestInitializer;
 import com.google.api.services.books.Books.Volumes.List;
 import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+//import android.httpclient.Header;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 /**
  * A sample application that demonstrates how Google Books Client Library for
@@ -48,6 +58,10 @@ public class BooksSample {
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
+
+    static JSONArray array;
+
+
 
     private static void queryGoogleBooks(JsonFactory jsonFactory, String query) throws Exception {
         ClientCredentials.errorIfNotSpecified();
@@ -175,5 +189,76 @@ public class BooksSample {
             t.printStackTrace();
         }
         System.exit(0);
+    }
+
+    public static JSONArray sampleCode(String newText){
+
+
+        if(newText.length()>0)
+        {
+            newText = newText.replace(" ", "+");
+            String url = "https://www.googleapis.com/books/v1/volumes?q=";
+            url = url + newText;
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.get(url, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+//                    java.util.List<myBook> bookList = new ArrayList<myBook>();
+
+                    String json = new String(responseBody);
+
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        JSONArray copyarray = object.getJSONArray("items");
+
+                        array = copyarray;
+
+//                        for (int i = 0; i < array.length(); i++) {
+//
+//
+//                            myBook book = new myBook();
+//                            JSONObject item = array.getJSONObject(i);
+//
+//                            JSONObject volumeInfo = item.getJSONObject("volumeInfo");
+//                            String title = volumeInfo.getString("title");
+//                            book.setBookTitle(title);
+//                            System.out.println(book.getBookTitle());
+//
+//                            JSONArray authors = volumeInfo.getJSONArray("authors");
+//                            String author = authors.getString(0);
+//                            book.setBookAuthor(author);
+//                            System.out.println(book.getBookAuthor());
+//
+//                            if(volumeInfo.has("imageLinks")) {
+//                                JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
+//                                String imageLink = imageLinks.getString("smallThumbnail");
+//                                book.setBookImageURL(imageLink);
+//                                System.out.println(book.getBookImageURL());
+//                            }
+//                            else{
+//                                book.setBookImageURL("No URL");
+//                            }
+//
+//                            bookList.add(book);
+//
+//                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+//                    LibraryFragment.showBooksList(getApplicationContext(), bookList);
+                }
+
+                @Override
+                public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+
+                }
+
+            });
+        }
+
+        return array;
+
     }
 }

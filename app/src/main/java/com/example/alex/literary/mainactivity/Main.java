@@ -51,14 +51,18 @@ public class Main extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
 
-        new ImportFiles(this.getApplicationContext());
+
 
         dfnField = (EditText) findViewById(R.id.dfnField);
         dfnDisplay = (TextView) findViewById(R.id.dfnDisplay);
         dfnBtn = (Button) findViewById(R.id.dfnBtn);
         addBtn = (Button)findViewById(R.id.addBtn);
 
-        PermissionWriteFiles.verifyStoragePermissions(this);
+        try{
+            PermissionWriteFiles.verifyStoragePermissions(this);
+            new ImportFiles(this.getApplicationContext());
+        }finally{
+        }
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
