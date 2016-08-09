@@ -90,7 +90,7 @@ public class WordManagement extends AppCompatActivity implements Constants {
                 }
                 else{
 
-                    Intent intent = new Intent(view.getContext(), BookProfile.class);
+                    Intent intent = new Intent(view.getContext(), BookSwipe.class);
                     Bundle bundle = new Bundle();
 
                     bundle.putString("data", item);
