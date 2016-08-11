@@ -151,6 +151,8 @@ public class WordManagement extends AppCompatActivity implements Constants {
                 if (c.moveToFirst()) {
                     do {
                         String bookTitle = c.getString(c.getColumnIndex("booktitle"));
+                        String id = c.getString(c.getColumnIndex("id"));
+                        System.out.println(id);
                         bookTitles.add(bookTitle);
                         wordListAdapter.notifyDataSetChanged();
                     } while (c.moveToNext());

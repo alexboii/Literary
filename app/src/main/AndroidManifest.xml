@@ -19,6 +19,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -30,7 +31,20 @@
 
         <activity android:name=".mainactivity.WordManagement" />
         <activity android:name=".mainactivity.BookProfile" />
-        <activity android:name=".mainactivity.BookSwipe"></activity>
+        <activity android:name=".mainactivity.BookSwipe">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".mainactivity.SearchActivity" />
+        </activity>
+        <activity android:name=".mainactivity.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>

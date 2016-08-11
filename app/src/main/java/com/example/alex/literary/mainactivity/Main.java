@@ -3,6 +3,7 @@ package com.example.alex.literary.mainactivity;
 import com.example.alex.literary.dictionary.*;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class Main extends AppCompatActivity {
     EditText dfnField;
     static TextView dfnDisplay, errorDisplay;
     Button dfnBtn, addBtn;
+    String query;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -34,6 +36,13 @@ public class Main extends AppCompatActivity {
             Manifest.permission.ACCESS_NETWORK_STATE
     };
 
+    Main (String query){
+        this.query = query;
+    }
+
+    Main(){
+
+    }
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -58,11 +67,17 @@ public class Main extends AppCompatActivity {
         dfnBtn = (Button) findViewById(R.id.dfnBtn);
         addBtn = (Button)findViewById(R.id.addBtn);
 
+
+
         try{
             PermissionWriteFiles.verifyStoragePermissions(this);
             new ImportFiles(this.getApplicationContext());
         }finally{
+
+
         }
+
+        handleIntent(getIntent());
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +95,8 @@ public class Main extends AppCompatActivity {
                 String hello = "";
                 Log.d(hello, "I'm here");
                 String inputWord = dfnField.getText().toString();
-                dfnDisplay.setText(English.processDefinition(inputWord));
+//                dfnDisplay.setText(English.processDefinition(inputWord));
+                dfnDisplay.setText(English.processDefinition(query));
                 dfnDisplay.setMovementMethod(new ScrollingMovementMethod());
 
             }
@@ -109,6 +125,22 @@ public class Main extends AppCompatActivity {
                 Uri.parse("android-app://com.example.alex.literary/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    protected void onNewIntent(Intent intent) {
+
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            dfnDisplay.setText(English.processDefinition(query));
+            dfnDisplay.setMovementMethod(new ScrollingMovementMethod());
+
+        }
     }
 
     @Override

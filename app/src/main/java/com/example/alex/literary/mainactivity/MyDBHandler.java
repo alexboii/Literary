@@ -19,16 +19,27 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_BOOKS + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_BOOK_TITLE + " TEXT " + ");";
+                COLUMN_BOOK_TITLE + " TEXT, " + COLUMN_WORDS + " TEXT);";
 
         db.execSQL(query);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS +  ";");
-        onCreate(db);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS +  ";");
 
+
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_BOOKS + " ADD COLUMN " + COLUMN_WORDS + " TEXT;");
+        }
+
+    }
+
+    public void addWords(String title, String words){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_WORDS, words);
+        SQLiteDatabase db = getWritableDatabase();
+        db.update(TABLE_BOOKS, cv, COLUMN_BOOK_TITLE + "=\"" + title + "\"", null);
     }
 
     public void addBook(myBook myBook){
@@ -43,6 +54,9 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + bookTitle + "\";");
     }
+
+
+
 
 //    public Cursor getAllRows() {
 //        String where = null;
