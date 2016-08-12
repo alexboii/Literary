@@ -8,11 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.alex.literary.R;
 import com.example.alex.literary.dictionary.English;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,12 +27,10 @@ public class SearchActivity extends AppCompatActivity implements Constants {
     public String query;
     public String mValue;
 
-
-
     MyDBHandler dbHandler;
     SQLiteDatabase newDB;
 
-    List<String> stringArray;
+    ArrayList stringArray = new ArrayList<>();
 
     Cursor cursor;
 
@@ -48,9 +49,13 @@ public class SearchActivity extends AppCompatActivity implements Constants {
 
     public void saveBtnAction(View view) {
 
+
         stringArray.add(query);
+        BookWordsFragment.refreshList(stringArray);
         String sendString = convertListToString(stringArray);
         dbHandler.addWords(mValue, sendString);
+//        ListView list = (ListView) this.findViewById(R.id.savedWordsList);
+//        ((CustomListAdapter)list.getAdapter()).notifyDataSetChanged();
 
     }
 
@@ -62,23 +67,24 @@ public class SearchActivity extends AppCompatActivity implements Constants {
 
     private void handleIntent(Intent intent) {
 
-         mValue = intent.getStringExtra("KEY");
+        mValue = intent.getStringExtra("KEY");
         System.out.println(mValue);
 
-
         dbHandler = new MyDBHandler(this.getApplicationContext(), null, null, 1);
-
-
         newDB = dbHandler.getWritableDatabase();
-
 
         String query2 = "SELECT " + COLUMN_WORDS + " FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + mValue + "\"";
         cursor = newDB.rawQuery(query2, null);
+
         if (cursor.moveToFirst()) {
             while (cursor.isAfterLast() != true) {
+
                 String itemname = cursor.getString(cursor.getColumnIndex("words"));
                 System.out.println(itemname);
-                stringArray = convertStringToList(itemname);
+                if(itemname != null){
+                    stringArray = (ArrayList) convertStringToList(itemname);
+                }
+
                 break;
             }
         }
@@ -87,8 +93,6 @@ public class SearchActivity extends AppCompatActivity implements Constants {
             query = intent.getStringExtra(SearchManager.QUERY);
             dfnDisplay.setText(English.processDefinition(query));
             dfnDisplay.setMovementMethod(new ScrollingMovementMethod());
-
-
         }
     }
 
@@ -99,7 +103,6 @@ public class SearchActivity extends AppCompatActivity implements Constants {
             stringBuffer.append(str).append(LIST_SEPARATOR);
         }
 
-        // Remove last separator
         int lastIndex = stringBuffer.lastIndexOf(LIST_SEPARATOR);
         stringBuffer.delete(lastIndex, lastIndex + LIST_SEPARATOR.length() + 1);
 
@@ -108,7 +111,7 @@ public class SearchActivity extends AppCompatActivity implements Constants {
 
     public static List<String> convertStringToList(String str) {
 
-        List<String> list = new LinkedList(Arrays.asList(str.split(LIST_SEPARATOR)));
+        List<String> list = new ArrayList(Arrays.asList(str.split(LIST_SEPARATOR)));
 
         return list;
     }

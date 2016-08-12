@@ -32,6 +32,8 @@ public class WordManagement extends AppCompatActivity implements Constants {
     public boolean isDelete;
 
 
+    // TODO: Edit class myBook to have database properties
+    // TODO: Create myBook object from Database that will be passed.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +65,11 @@ public class WordManagement extends AppCompatActivity implements Constants {
 
         String[] argument = new String[]{"The Birth of Tragedy"};
 
-//        new BooksSample().main(argument);
-//        String lol = "Madame Bovary";
-//        BooksSample.sampleCode(lol);
-
         wordList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                 String item = (String) wordList.getItemAtPosition(position);
                 System.out.println(item + "//" + isDelete);
-
-
 
                 if(isDelete){
 

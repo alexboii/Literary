@@ -56,4 +56,5 @@ class CustomListAdapter extends ArrayAdapter {
             return mView;
         }
 
+
     }

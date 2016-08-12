@@ -11,6 +11,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.os.Bundle;
@@ -44,6 +47,8 @@ public class BookSwipe extends AppCompatActivity {
     WebView wbDescription;
     ImageView ivCover;
 
+    CustomAdapter adapter;
+
     String bookTitle;
 
     public void startActivity(Intent intent) {
@@ -70,28 +75,37 @@ public class BookSwipe extends AppCompatActivity {
         bookTitle = bundle.getString("data");
 
         System.out.println(bookTitle);
-//        sampleCode(bookTitle);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new CustomAdapter(getSupportFragmentManager(), getActionBar()));
+
+        adapter = new CustomAdapter(getSupportFragmentManager(), getActionBar());
+        viewPager.setAdapter(adapter);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
+//        adapter.notifyDataSetChanged();
+
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
                 viewPager.setCurrentItem(tab.getPosition());
+//                viewPager.setAdapter(adapter);
+
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                viewPager.setCurrentItem(tab.getPosition());
+//                viewPager.setAdapter(adapter);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                viewPager.setCurrentItem(tab.getPosition());
+//                viewPager.setAdapter(adapter);
             }
         });
     }
@@ -121,7 +135,7 @@ public class BookSwipe extends AppCompatActivity {
     }
 
 
-    private class CustomAdapter extends android.support.v4.app.FragmentPagerAdapter {
+    private class CustomAdapter extends FragmentStatePagerAdapter {
 
         private String[] fragments = {"Information", "Words", "Quotes"};
 
@@ -135,9 +149,9 @@ public class BookSwipe extends AppCompatActivity {
                 case 0:
                     return new BookProfileFragment(bookTitle);
                 case 1:
-                    return new BookWordsFragment();
+                    return new BookWordsFragment(bookTitle);
                 case 2:
-                    return new BookQuotesFragment();
+                    return new BookQuotesFragment(bookTitle);
                 default:
                     return null;
             }
@@ -148,8 +162,14 @@ public class BookSwipe extends AppCompatActivity {
             return fragments.length;
         }
 
+        @Override
         public CharSequence getPageTitle(int position) {
             return fragments[position];
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
     }
 }

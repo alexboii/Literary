@@ -28,10 +28,16 @@ public class BookQuotesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public String bookTitle;
+
 //    private OnFragmentInteractionListener mListener;
 
     public BookQuotesFragment() {
         // Required empty public constructor
+    }
+
+    public BookQuotesFragment(String bookTitle){
+        this.bookTitle = bookTitle;
     }
 
     /**
