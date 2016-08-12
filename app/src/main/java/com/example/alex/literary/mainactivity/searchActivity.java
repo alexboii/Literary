@@ -54,8 +54,8 @@ public class SearchActivity extends AppCompatActivity implements Constants {
         BookWordsFragment.refreshList(stringArray);
         String sendString = convertListToString(stringArray);
         dbHandler.addWords(mValue, sendString);
-//        ListView list = (ListView) this.findViewById(R.id.savedWordsList);
-//        ((CustomListAdapter)list.getAdapter()).notifyDataSetChanged();
+//--        ListView list = (ListView) this.findViewById(R.id.savedWordsList);
+//--        ((CustomListAdapter)list.getAdapter()).notifyDataSetChanged();
 
     }
 

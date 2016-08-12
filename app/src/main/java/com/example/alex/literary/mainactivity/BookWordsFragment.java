@@ -24,18 +24,17 @@ public class BookWordsFragment extends Fragment implements Constants {
     SQLiteDatabase newDB;
     Cursor cursor;
 
-    public static ArrayAdapter wordListAdapter;
+    public static CustomListAdapter wordListAdapter;
     public ListView wordList;
 
     public String bookTitle;
 
-    static List<String> stringArray = new ArrayList<>();
+    public static List<String> stringArray = new ArrayList<>();
 
 
-//    private OnFragmentInteractionListener mListener;
 
     public BookWordsFragment() {
-        // Required empty public constructor
+
     }
 
     public BookWordsFragment(String bookTitle){
@@ -100,13 +99,14 @@ public class BookWordsFragment extends Fragment implements Constants {
 
     public static void refreshList(ArrayList stringArrayCopy){
         stringArray = stringArrayCopy;
-        wordListAdapter.notifyDataSetChanged();
+        wordListAdapter.setList((ArrayList<String>) stringArray);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        wordListAdapter.notifyDataSetChanged();
+        stringArray = populateArray();
+        wordListAdapter.setList((ArrayList<String>) stringArray);
     }
 
 

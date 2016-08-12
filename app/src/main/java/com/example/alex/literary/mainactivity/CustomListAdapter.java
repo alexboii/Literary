@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.alex.literary.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,14 +48,27 @@ class CustomListAdapter extends ArrayAdapter {
                 text.setTextColor(Color.BLACK);
                 text.setText(items.get(position));
                 text.setTextSize(30);
-//                text.setBackgroundColor(Color.RED);
-//                int color = Color.argb( 200, 255, 64, 64 );
-//                text.setBackgroundColor( color );
 
             }
 
             return mView;
         }
 
+        @Override
+        public int getCount() {
+            return items.size();
+        }
 
-    }
+        @Override
+        public String getItem(int position) {
+            return items.get(position);
+        }
+
+        public void setList(ArrayList<String> wordsList) {
+            items = wordsList; //mWordsList is the list you have as a field in adapter.
+            notifyDataSetChanged();
+        }
+
+
+
+}
