@@ -11,6 +11,7 @@ public interface Constants {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_BOOK_TITLE = "booktitle";
     public static final String COLUMN_WORDS = "words";
+    public static final String COLUMN_QUOTES = "quotes";
 
     public static final String[] ALL_KEYS = new String[] {COLUMN_ID, COLUMN_BOOK_TITLE};
 

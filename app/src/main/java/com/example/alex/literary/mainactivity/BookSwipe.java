@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -36,16 +38,21 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
 
+public class BookSwipe extends AppCompatActivity implements Constants{
+    private TextView tvTitle;
+    private TextView tvAuthor;
+    private WebView wbDescription;
+    private ImageView ivCover;
 
-public class BookSwipe extends AppCompatActivity {
-    TextView tvTitle;
-    TextView tvAuthor;
-    WebView wbDescription;
-    ImageView ivCover;
+    private MyDBHandler dbHandler;
+    private SQLiteDatabase newDB;
+
+    private Cursor cursor;
 
     CustomAdapter adapter;
 
@@ -140,6 +147,9 @@ public class BookSwipe extends AppCompatActivity {
                 return true;
             case R.id.camera:
                 Intent intent = new Intent(this, CameraActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("data", getJSONQuotes());
+                intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
             default:
@@ -153,6 +163,40 @@ public class BookSwipe extends AppCompatActivity {
 
     public void setBookTitle(String bookTitle) {
         this.bookTitle = bookTitle;
+    }
+
+    public String getJSONQuotes() {
+
+        String JSONString = null;
+
+        dbHandler = new MyDBHandler(this.getApplicationContext(), null, null, 1);
+        newDB = dbHandler.getWritableDatabase();
+
+        String query = "SELECT " + COLUMN_WORDS + " FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + bookTitle + "\"";
+        cursor = newDB.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            while (cursor.isAfterLast() != true) {
+
+                JSONString = cursor.getString(cursor.getColumnIndex("quotes"));
+
+                if (JSONString == null) {
+
+                    JSONArray obj = new JSONArray();
+                    String firstJSON = obj.toString();
+                    dbHandler.addQuotes(bookTitle, firstJSON);
+
+                    System.out.println(JSONString);
+                }
+
+                break;
+            }
+        }
+
+
+        return JSONString;
+
+
     }
 
 

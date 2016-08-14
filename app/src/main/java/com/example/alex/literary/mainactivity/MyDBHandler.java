@@ -19,7 +19,7 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_BOOKS + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_BOOK_TITLE + " TEXT, " + COLUMN_WORDS + " TEXT);";
+                COLUMN_BOOK_TITLE + " TEXT, " + COLUMN_QUOTES + " TEXT, " + COLUMN_WORDS + " TEXT);";
 
         db.execSQL(query);
     }
@@ -33,11 +33,23 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
             db.execSQL("ALTER TABLE " + TABLE_BOOKS + " ADD COLUMN " + COLUMN_WORDS + " TEXT;");
         }
 
+        if (oldVersion < 3){
+            db.execSQL("ALTER TABLE " + TABLE_BOOKS + " ADD COLUMN " + COLUMN_QUOTES + " TEXT;");
+
+        }
+
     }
 
     public void addWords(String title, String words){
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_WORDS, words);
+        SQLiteDatabase db = getWritableDatabase();
+        db.update(TABLE_BOOKS, cv, COLUMN_BOOK_TITLE + "=\"" + title + "\"", null);
+    }
+
+    public void addQuotes(String title, String words){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_QUOTES, words);
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE_BOOKS, cv, COLUMN_BOOK_TITLE + "=\"" + title + "\"", null);
     }
