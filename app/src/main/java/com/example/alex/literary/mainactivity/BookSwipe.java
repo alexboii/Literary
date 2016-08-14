@@ -122,8 +122,29 @@ public class BookSwipe extends AppCompatActivity {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
+
         return true;
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.search2:
+//                SearchManager searchManager =
+//                        (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//                SearchView searchView =
+//                        (SearchView) menu.findItem(R.id.search2).getActionView();
+//                searchView.setSearchableInfo(
+//                        searchManager.getSearchableInfo(getComponentName()));
+                return true;
+            case R.id.camera:
+                Intent intent = new Intent(this, CameraActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public String getBookTitle() {

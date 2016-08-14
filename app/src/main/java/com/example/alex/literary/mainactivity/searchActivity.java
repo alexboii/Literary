@@ -80,8 +80,10 @@ public class SearchActivity extends AppCompatActivity implements Constants {
             while (cursor.isAfterLast() != true) {
 
                 String itemname = cursor.getString(cursor.getColumnIndex("words"));
-                System.out.println(itemname);
                 if(itemname != null){
+
+                System.out.println(itemname);
+
                     stringArray = (ArrayList) convertStringToList(itemname);
                 }
 

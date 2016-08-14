@@ -17,7 +17,8 @@ public class PermissionWriteFiles {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_NETWORK_STATE
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CAMERA
     };
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -26,10 +27,11 @@ public class PermissionWriteFiles {
         int readPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         int inetPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.INTERNET);
         int accessPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE);
+        int cameraPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
 
         System.out.println(PackageManager.PERMISSION_GRANTED);
 
-        if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission != PackageManager.PERMISSION_GRANTED || inetPermission != PackageManager.PERMISSION_GRANTED || accessPermission != PackageManager.PERMISSION_GRANTED  ) {
+        if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission != PackageManager.PERMISSION_GRANTED || inetPermission != PackageManager.PERMISSION_GRANTED || accessPermission != PackageManager.PERMISSION_GRANTED || cameraPermission != PackageManager.PERMISSION_GRANTED ) {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
                     activity,

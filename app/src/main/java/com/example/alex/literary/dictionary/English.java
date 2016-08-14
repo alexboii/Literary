@@ -25,6 +25,9 @@ import edu.mit.jwi.morph.WordnetStemmer;
  */
 public class English {
 
+
+    // BUG DOESN'T WORK FIRST TIME YOU RUN IT
+
     public static String processDefinition(String inputWord) {
 
         String formatedString;
