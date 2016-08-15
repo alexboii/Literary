@@ -52,7 +52,7 @@ public class BookSwipe extends AppCompatActivity implements Constants{
     private MyDBHandler dbHandler;
     private SQLiteDatabase newDB;
 
-    private Cursor cursor;
+//    public Cursor cursor;
 
     CustomAdapter adapter;
 
@@ -149,6 +149,7 @@ public class BookSwipe extends AppCompatActivity implements Constants{
                 Intent intent = new Intent(this, CameraActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("data", getJSONQuotes());
+                bundle.putString("booktitle", getBookTitle());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
@@ -172,31 +173,35 @@ public class BookSwipe extends AppCompatActivity implements Constants{
         dbHandler = new MyDBHandler(this.getApplicationContext(), null, null, 1);
         newDB = dbHandler.getWritableDatabase();
 
-        String query = "SELECT " + COLUMN_WORDS + " FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + bookTitle + "\"";
-        cursor = newDB.rawQuery(query, null);
+        String query = "SELECT " + COLUMN_QUOTES + " FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + bookTitle + "\"";
+        Cursor cursor = newDB.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             while (cursor.isAfterLast() != true) {
 
-                JSONString = cursor.getString(cursor.getColumnIndex("quotes"));
+                JSONString = cursor.getString(cursor.getColumnIndexOrThrow("quotes"));
+
+                System.out.println("HELLO: " + JSONString);
 
                 if (JSONString == null) {
 
-                    JSONArray obj = new JSONArray();
+                    JSONObject obj = new JSONObject();
                     String firstJSON = obj.toString();
                     dbHandler.addQuotes(bookTitle, firstJSON);
+                    JSONString = firstJSON;
 
-                    System.out.println(JSONString);
+                    System.out.println(firstJSON);
+
                 }
 
                 break;
             }
         }
-
+        else{
+            return null;
+        }
 
         return JSONString;
-
-
     }
 
 

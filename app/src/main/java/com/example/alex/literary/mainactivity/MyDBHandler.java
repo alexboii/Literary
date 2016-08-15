@@ -47,9 +47,9 @@ public class MyDBHandler extends SQLiteOpenHelper implements Constants {
         db.update(TABLE_BOOKS, cv, COLUMN_BOOK_TITLE + "=\"" + title + "\"", null);
     }
 
-    public void addQuotes(String title, String words){
+    public void addQuotes(String title, String quotes){
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_QUOTES, words);
+        cv.put(COLUMN_QUOTES, quotes);
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE_BOOKS, cv, COLUMN_BOOK_TITLE + "=\"" + title + "\"", null);
     }

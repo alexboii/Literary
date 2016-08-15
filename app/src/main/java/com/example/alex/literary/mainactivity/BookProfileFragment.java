@@ -73,8 +73,7 @@ public class BookProfileFragment extends Fragment {
         StrictMode.setThreadPolicy(policy);
 
         View rootView = inflater.inflate(R.layout.fragment_book_profile, container, false);
-
-        System.out.println(bookTitle);
+        
         sampleCode(bookTitle);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tvTitle2);
