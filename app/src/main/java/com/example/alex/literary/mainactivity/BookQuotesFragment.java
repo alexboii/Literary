@@ -2,29 +2,45 @@ package com.example.alex.literary.mainactivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.example.alex.literary.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BookQuotesFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BookQuotesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class BookQuotesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
+
+
+public class BookQuotesFragment extends Fragment implements Constants {
+
+
+    private String[] FilePathStrings;
+    private String[] FileNameStrings;
+    private File[] listFile;
+    GridView grid;
+    static GridViewAdapter adapter;
+    File file;
+
+    private MyDBHandler dbHandler;
+    private SQLiteDatabase newDB;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -42,44 +58,6 @@ public class BookQuotesFragment extends Fragment {
         this.bookTitle = bookTitle;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookQuotesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-//    public static BookQuotesFragment newInstance(String param1, String param2) {
-//        BookQuotesFragment fragment = new BookQuotesFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-//    public void onStart(){
-//
-//        super.onStart();
-//        try {
-//            mListener = (OnFragmentInteractionListener) getActivity();
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(getActivity().toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,16 +66,84 @@ public class BookQuotesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_book_quotes, container, false);
 
-        Button tempBtn = (Button)rootView.findViewById(R.id.tempBtn);
+//        Button tempBtn = (Button)rootView.findViewById(R.id.tempBtn);
+//
+//        tempBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(view.getContext(), CameraActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
-        tempBtn.setOnClickListener(new View.OnClickListener() {
+        // Check for SD Card
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+//            Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG)
+//                    .show();
+        } else {
+            // Locate the image folder in your SD Card
+            file = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + "SDImageTutorial" + File.separator + bookTitle);
+            // Create a new folder if no folder named SDImageTutorial exist
+//            if (!file.exists()){
+//                if (!file.mkdirs()){
+//                    Log.d("CameraDemo", "failed to create directory");
+//                    return null;
+//                }
+//            }
+
+            file.mkdir();
+        }
+
+//        if (file.isDirectory()) {
+//            listFile = file.listFiles();
+//            // Create a String array for FilePathStrings
+//            FilePathStrings = new String[listFile.length];
+//            // Create a String array for FileNameStrings
+//            FileNameStrings = new String[listFile.length];
+//
+//            for (int i = 0; i < listFile.length; i++) {
+//                // Get the path of the image file
+//                FilePathStrings[i] = listFile[i].getAbsolutePath();
+//                // Get the name image file
+//                FileNameStrings[i] = listFile[i].getName();
+//            }
+//        }
+
+        populateArray();
+
+        // Locate the GridView in gridview_main.xml
+        grid = (GridView) rootView.findViewById(R.id.gridview);
+        // Pass String arrays to LazyAdapter Class
+        adapter = new GridViewAdapter(this.getActivity(), FilePathStrings, FileNameStrings);
+        // Set the LazyAdapter to the GridView
+//        adapter.notifyDataSetChanged();
+        grid.setAdapter(adapter);
+
+
+        // Capture gridview item click
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), CameraActivity.class);
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
 
+                Intent i = new Intent(getContext(), ViewImage.class);
+                // Pass String arrays FilePathStrings
+                i.putExtra("filepath", FilePathStrings);
+                // Pass String arrays FileNameStrings
+                i.putExtra("filename", FileNameStrings);
+                // Pass click position
+                i.putExtra("position", position);
+                startActivity(i);
             }
+
         });
+
+
+        adapter.notifyDataSetChanged();
 
         return rootView;
     }
@@ -109,42 +155,107 @@ public class BookQuotesFragment extends Fragment {
 
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
+    public void populateArray() {
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+        ArrayList<String> arrayNames = new ArrayList<String>();
+        ArrayList<String> arrayPage = new ArrayList<String>();
+
+        try {
+            JSONObject object = new JSONObject(getJSONQuotes());
+            String temp = object.getString("quotes");
+            JSONArray array = new JSONArray(temp);
+            for (int i = 0; i < array.length(); i++) {
 //
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+                String temp2 = array.getString(i);
+                JSONObject item = new JSONObject(temp2);
+
+                String title = item.getString("path");
+                System.out.println(title + "// p. " + item.getString("page"));
+                arrayNames.add(item.getString("path"));
+                arrayPage.add(item.getString("page"));
+
+            }
+
+//            for(int i = 0; i < arrayNames.length; i++){
+//                System.out.println(arrayNames[i] + "//" + arrayPage[i]);
+//            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        if (file.isDirectory()) {
+            listFile = file.listFiles();
+            // Create a String array for FilePathStrings
+            FilePathStrings = new String[listFile.length];
+            // Create a String array for FileNameStrings
+            FileNameStrings = new String[listFile.length];
+
+            for (int i = 0; i < listFile.length; i++) {
+                // Get the path of the image file
+                FilePathStrings[i] = listFile[i].getAbsolutePath();
+                // Get the name image file
+                FileNameStrings[i] = listFile[i].getName();
+            }
+
+        }
+
+        for (int i = 0; i < listFile.length; i++) {
+            System.out.println(FileNameStrings[i]);
+            if (arrayNames.get(i) != null && arrayNames.get(i).equals(FileNameStrings[i])) {
+                FileNameStrings[i] = "Page " + arrayPage.get(i);
+                System.out.println("I'm in the if statement: " + FileNameStrings[i]);
+            }
+        }
+    }
+
+    public void onResume(){
+        super.onResume();
+        populateArray();
+        adapter.setList(FilePathStrings, FileNameStrings);
+        adapter.notifyDataSetChanged();
+    }
+
+    public String getJSONQuotes() {
+
+        String JSONString = null;
+
+        dbHandler = new MyDBHandler(this.getActivity(), null, null, 1);
+        newDB = dbHandler.getWritableDatabase();
+
+        String query = "SELECT " + COLUMN_QUOTES + " FROM " + TABLE_BOOKS + " WHERE " + COLUMN_BOOK_TITLE + "=\"" + bookTitle + "\"";
+        Cursor cursor = newDB.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            while (cursor.isAfterLast() != true) {
+
+                JSONString = cursor.getString(cursor.getColumnIndexOrThrow("quotes"));
+
+                System.out.println("HELLO: " + JSONString);
+
+                if (JSONString == null) {
+
+                    JSONObject obj = new JSONObject();
+                    String firstJSON = obj.toString();
+
+                    dbHandler.addQuotes(bookTitle, firstJSON);
+                    JSONString = firstJSON;
+
+                    System.out.println(firstJSON);
+
+                }
+
+                break;
+            }
+        }
+        else{
+            return null;
+        }
+
+        return JSONString;
+    }
+
 }

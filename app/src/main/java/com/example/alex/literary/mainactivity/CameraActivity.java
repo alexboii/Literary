@@ -34,9 +34,19 @@ public class CameraActivity extends AppCompatActivity {
     private String directory;
     private boolean isSaved = false, pictureTaken;
     private EditText descriptionText;
-    private String bookTitle;
+    private String pageNumber;
+
+
+
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
+    }
+
+    private static String bookTitle;
+    private EditText pageText;
     JSONObject temp;
     private String copyJSON;
+    private static String filename;
     MyDBHandler dbHandler;
     ArrayList<String> arrStr;
 
@@ -47,13 +57,23 @@ public class CameraActivity extends AppCompatActivity {
 
         dbHandler = new MyDBHandler(this.getApplicationContext(), null, null, 1);
 
+        Bundle bundle = getIntent().getExtras();
+
+        System.out.println("RECEIVED DATA : " + bundle.getString("data"));
+        System.out.println("BOOK TITLE " + bundle.getString("booktitle"));
+        copyJSON = bundle.getString("data");
+        setBookTitle(bundle.getString("booktitle"));
+
         takePictureButton = (Button) findViewById(R.id.button_image);
         imageView = (ImageView) findViewById(R.id.imageview);
         descriptionText = (EditText)findViewById(R.id.descriptionText);
+        pageText = (EditText)findViewById(R.id.pageText);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         file = Uri.fromFile(getOutputMediaFile());
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
+
+
 
 
         startActivityForResult(intent, 100);
@@ -66,9 +86,12 @@ public class CameraActivity extends AppCompatActivity {
 
         JSONObject item = new JSONObject();
 
+        pageNumber = pageText.getText().toString();
+
         try {
-            item.put("path", directory);
+            item.put("path", filename);
             item.put("description", descriptionText.getText().toString());
+            item.put("page", pageNumber);
             arrStr.add(item.toString());
             JSONObject json = new JSONObject();
             json.put("quotes", new JSONArray(arrStr));
@@ -76,6 +99,7 @@ public class CameraActivity extends AppCompatActivity {
             System.out.println("AM I HERE?" + temp.toString());
             System.out.println("HELOLLLLLL");
             dbHandler.addQuotes(bookTitle, arrayList);
+//            BookQuotesFragment.adapter.notifyDataSetChanged();
             finish();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -104,17 +128,24 @@ public class CameraActivity extends AppCompatActivity {
 
 
     private static File getOutputMediaFile(){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "CameraDemo");
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "SDImageTutorial" + File.separator + bookTitle);
 
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
-                Log.d("CameraDemo", "failed to create directory");
-                return null;
-            }
-        }
+        System.out.println("FILE TITLE BOOK: " + bookTitle);
+
+//        if (!mediaStorageDir.exists()){
+//            if (!mediaStorageDir.mkdirs()){
+//                Log.d("CameraDemo", "failed to create directory");
+//                return null;
+//            }
+//        }
+
+        mediaStorageDir.mkdir();
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        filename = "IMG_"+ timeStamp + ".jpg";
+
         return new File(mediaStorageDir.getPath() + File.separator +
                 "IMG_"+ timeStamp + ".jpg");
     }
@@ -122,12 +153,6 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Bundle bundle = getIntent().getExtras();
-
-        System.out.println("RECEIVED DATA : " + bundle.getString("data"));
-        System.out.println(bundle.getString("booktitle"));
-        copyJSON = bundle.getString("data");
-        bookTitle = bundle.getString("booktitle");
 
         arrStr = new ArrayList<String>();
 

@@ -21,10 +21,13 @@
         android:id="@+id/button_image"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:onClick="takePicture"
-        android:text="Save quote"/>
+        android:text="Save quote"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/editText"
+        android:layout_toStartOf="@+id/editText" />
 
     <EditText
         android:layout_width="200dp"
@@ -35,6 +38,18 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="Enter Description"
+        android:textAlignment="center" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/pageText"
+        android:layout_alignTop="@+id/button_image"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="Enter Page Number"
+        android:textAlignment="center" />
 
 </RelativeLayout>

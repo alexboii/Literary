@@ -47,6 +47,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".mainactivity.CameraActivity"></activity>
+        <activity android:name=".mainactivity.ViewImage"></activity>
     </application>
 
 </manifest>
