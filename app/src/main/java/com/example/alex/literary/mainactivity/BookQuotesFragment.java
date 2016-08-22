@@ -204,10 +204,15 @@ public class BookQuotesFragment extends Fragment implements Constants {
         }
 
         for (int i = 0; i < listFile.length; i++) {
-            System.out.println(FileNameStrings[i]);
-            if (arrayNames.get(i) != null && arrayNames.get(i).equals(FileNameStrings[i])) {
-                FileNameStrings[i] = "Page " + arrayPage.get(i);
-                System.out.println("I'm in the if statement: " + FileNameStrings[i]);
+            try {
+
+                System.out.println(FileNameStrings[i]);
+                if (arrayNames.get(i) != null && arrayNames.get(i).equals(FileNameStrings[i])) {
+                    FileNameStrings[i] = "Page " + arrayPage.get(i);
+                    System.out.println("I'm in the if statement: " + FileNameStrings[i]);
+                }
+            }catch(IndexOutOfBoundsException e){
+                e.printStackTrace();
             }
         }
     }
